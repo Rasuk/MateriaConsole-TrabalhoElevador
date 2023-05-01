@@ -1,29 +1,60 @@
 package ElevadorMultithread;
-
+import java.util.concurrent.Semaphore;
+import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
 public class Elevador extends Thread {
-public int AndarAtual = 0;
-public int AndarDestino;
+public static int AndarAtual = 0;
+public static int AndarDestino;
 public int PassageirosRecebidos;
-public boolean PassageiroPresente;
-public boolean PortaAberta = false;
-
-
+public int variavelauxiliar = 0;
+public static boolean PassageiroPresente;
+public static boolean PortaAberta = false;
+public static boolean EmProgresso = false;
+public static ArrayList<Passageiros> listaPassageirosRecebida = new ArrayList<Passageiros>();
+Semaphore semaforo = new Semaphore(1);
 
 public Elevador(int PassageirosTotais)
 {
 	PassageirosRecebidos = PassageirosTotais;
+
+
 }
 
 public void run()
 {
-	//while( PassageirosRecebidos > 0)
-	//{
-		//System.out.println(PassageirosRecebidos);
-		//PassageirosRecebidos --;
-	//}
+	
+	while( PassageirosRecebidos > 0)
+	{
+		try {
+		semaforo.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		
+		if(PassageiroPresente== false && EmProgresso==false && PortaAberta ==false)
+		{
+			try {
+			
+				int A =listaPassageirosRecebida.get(0).AndarPresente;
+				VisitarAndar(A);
+				
+			}
+			catch(IndexOutOfBoundsException e){
+				System.out.println("Não há passageiros");
+			}
+		}
+		
+		else {	
+			
+			
+		}
+		semaforo.release();
+	}
 }
 
-public void AbrirPortas()
+public static void AbrirPortas()
 {
 	if(AndarAtual == AndarDestino && PortaAberta==false)
 	{
@@ -34,7 +65,7 @@ public void AbrirPortas()
 	
 }
 
-public void FecharPortas()
+public static void FecharPortas()
 {
 	if(AndarAtual == AndarDestino)
 	{
@@ -46,10 +77,12 @@ public void FecharPortas()
 	
 }
 
-public void VisitarAndar(int AndarDst) 
-{
+public static void VisitarAndar(int AndarDst) 
+{	
+	FecharPortas();
 	if(PortaAberta == false)
 	{
+	
 		AndarAtual = AndarDst;
 		AndarDestino = AndarDst;
 		System.out.println("O elevador vai para o andar " + AndarDestino);
@@ -57,6 +90,7 @@ public void VisitarAndar(int AndarDst)
 		{
 			System.out.println("O elevador chegou ao seu destino, o andar: " + AndarDestino);
 			AbrirPortas();
+			
 		}
 		
 	}
