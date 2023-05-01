@@ -8,22 +8,28 @@ public void run()
 {
 	
 	System.out.println("O passageiro: " + IDP + " e está no andar: " + AndarPresente + " E vai pro andar: " + AndarDestino );
-	Semaphore semaforo = new Semaphore(5);
+	Semaphore semaforo = new Semaphore(1);
 
 	
 		while(ChegouNoAndar == false)
-
+		{
+			try {
+				semaforo.acquire();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		if(Elevador.AndarAtual == this.AndarPresente && Elevador.PortaAberta && Elevador.PassageiroPresente == false )
 		{
 			EntrarElevador();
 		}
 		if(Elevador.AndarAtual == this.AndarDestino && Elevador.PortaAberta)
 		{
-			this.ChegouNoAndar= true;
 			SairElevador();
+			
 		}
+		semaforo.release();
 	}
-	
+}
 
 
 private void EntrarElevador() {
@@ -34,9 +40,14 @@ Elevador.EmProgresso = true;
 
 public void SairElevador()
 {
+	ChegouNoAndar = true;
 	Elevador.PassageiroPresente = false;
 	System.out.println("Bigado moço");
-	//Elevador.variavelauxiliar++;
+	//Elevador.listaPassageirosRecebida.remove(this.IDP);
+	Elevador.variavelauxiliar++;
+	Elevador.FecharPortas();
+	Elevador.EmProgresso = false;
+	Elevador.PassageirosRecebidos --;
 }
 
 public Passageiros(int ID, int AndarPRT, int AndarDst)

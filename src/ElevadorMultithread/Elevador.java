@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class Elevador extends Thread {
 public static int AndarAtual = 0;
 public static int AndarDestino;
-public int PassageirosRecebidos;
-public int variavelauxiliar = 0;
+public static int PassageirosRecebidos;
+public static int variavelauxiliar = 0;
 public static boolean PassageiroPresente;
 public static boolean PortaAberta = false;
 public static boolean EmProgresso = false;
@@ -26,18 +26,19 @@ public void run()
 	
 	while( PassageirosRecebidos > 0)
 	{
+		/*
 		try {
 		semaforo.acquire();
 	} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-		
+		*/
 		if(PassageiroPresente== false && EmProgresso==false && PortaAberta ==false)
 		{
 			try {
 			
-				int A =listaPassageirosRecebida.get(0).AndarPresente;
+				int A =listaPassageirosRecebida.get(variavelauxiliar).AndarPresente;
 				VisitarAndar(A);
 				
 			}
@@ -50,7 +51,9 @@ public void run()
 			
 			
 		}
+		/*
 		semaforo.release();
+		*/
 	}
 }
 
@@ -79,6 +82,7 @@ public static void FecharPortas()
 
 public static void VisitarAndar(int AndarDst) 
 {	
+	
 	FecharPortas();
 	if(PortaAberta == false)
 	{
